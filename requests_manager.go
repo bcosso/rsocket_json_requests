@@ -13,7 +13,7 @@ import (
 )
 
 
-func AppendFunctionHandler(name string, function func() string ) {
+func AppendFunctionHandler(name string, function func(pload interface{}) string ) {
 	var func1 FunctionName;
 	func1.Function = function
 	func1.Name = name
@@ -21,7 +21,7 @@ func AppendFunctionHandler(name string, function func() string ) {
 }
 
 type FunctionName struct{
-	Function func() string;
+	Function func(pload interface{}) string;
 	Name string 
 }
 
@@ -55,9 +55,9 @@ func ServeCalls(){
 				}
 				for _, f := range func_list{
 					
-					if parsed_document["method"] == f.Name{
+					if parsed_document["method"].(string) == f.Name{
 						fmt.Println(f)
-						f.Function()
+						f.Function(parsed_document["payload"].(interface{}))
 					}
 				}
 				

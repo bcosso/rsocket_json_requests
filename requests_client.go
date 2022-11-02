@@ -8,8 +8,18 @@ import (
 	"github.com/rsocket/rsocket-go/payload"
 )
 
+
+
+type GenericList struct{
+	Method string `json:"method"`
+	Payload interface{} `json:"payload"`
+}
+
 var _ip string
 var _port int
+
+var _genericList GenericList
+
 
 func RequestConfigs(ip string, port int){
 	_ip = ip
@@ -26,9 +36,14 @@ func RequestJSON(method string, json_content interface {}) {
 		panic(err)
 	}
 	defer cli.Close()
+	_genericList.Method = method
 	method = "{\"method\":\""+ method +"\"}"
 	data := []byte(method)
-	meta_data, err := json.Marshal(json_content)
+
+	
+	_genericList.Payload = json_content
+	
+	meta_data, err := json.Marshal(_genericList)
 	result, err := cli.RequestResponse(payload.New(meta_data, data)).Block(context.Background())
 	//result, err := cli.RequestResponse(payload.NewString("{\"method\":\""+ method +"\"}", "{\"tesssst\":\"field\"}")).Block(context.Background())
 	if err != nil {
