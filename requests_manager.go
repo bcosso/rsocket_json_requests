@@ -13,7 +13,7 @@ import (
 )
 
 
-func AppendFunctionHandler(name string, function func(pload interface{}) string ) {
+func AppendFunctionHandler(name string, function func(pload interface{}) interface{} ) {
 	var func1 FunctionName;
 	func1.Function = function
 	func1.Name = name
@@ -21,7 +21,7 @@ func AppendFunctionHandler(name string, function func(pload interface{}) string 
 }
 
 type FunctionName struct{
-	Function func(pload interface{}) string;
+	Function func(pload interface{}) interface{};
 	Name string 
 }
 
@@ -34,6 +34,7 @@ func ServeCalls(){
 		return rsocket.NewAbstractSocket(
 			rsocket.RequestResponse(func(msg payload.Payload) mono.Mono {
 				var mt interface{}
+				var resp interface{}
 				fmt.Println(msg)
 				err := json.Unmarshal(msg.Data(), &mt)
 
@@ -57,11 +58,15 @@ func ServeCalls(){
 					
 					if parsed_document["method"].(string) == f.Name{
 						fmt.Println(f)
-						f.Function(parsed_document["payload"].(interface{}))
+						resp = f.Function(parsed_document["payload"].(interface{}))
 					}
 				}
+				method := "{\"status\":\"200\"}"
+				data := []byte(method)
+
 				
-				return mono.Just(msg)
+				meta_data, err := json.Marshal(resp)
+				return mono.Just(payload.New(data, meta_data))
 			}),
 		), nil
 	}).
