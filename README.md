@@ -1,4 +1,4 @@
-The objective of this project is create a wrapper of RSocket for Golang for JSON payloads and triggering methods on the server side, like a web request in gorilla.
+The objective of this project is create a wrapper of RSocket for Golang for JSON payloads and triggering methods on the server side, like a HTTP Route (a web request in gorilla, for example).
 
 Example Server:
 ```golang
