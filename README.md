@@ -15,17 +15,17 @@ func main() {
 	rsocket_json_requests.ServeCalls()
 }
 
-func execute_something(payload interface{}) string{
+func execute_something(payload interface{}) interface{}{
 	fmt.Println("execute_something")
 	fmt.Println(payload)
-	return "execute_something"
+	return payload
 }
 
 
-func dont_execute_something(payload interface{}) string{
+func dont_execute_something(payload interface{}) interface{}{
 	fmt.Println("dont_execute_something")
 	fmt.Println(payload)
-	return "dont_execute_something"
+	return payload
 }
 
 ```
