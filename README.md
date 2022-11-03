@@ -70,3 +70,6 @@ func main(){
 	rsocket_json_requests.RequestJSON("execute_something", list_peers)
 }
 ```
+TODO:
+- add TLS certificate
+- ...
