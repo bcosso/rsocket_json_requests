@@ -36,6 +36,7 @@ Example Client:
 package main
 
 import (
+	"fmt"
 	"rsocket_json_requests"
 )
 
@@ -52,23 +53,28 @@ type peers struct {
 
 func main(){
 
-	var list []peers
+	list_peers := getObject() 
 
+	rsocket_json_requests.RequestConfigs("127.0.0.1", 7878)
+	result := rsocket_json_requests.RequestJSON("execute_something", list_peers)
+	fmt.Println(result)
+
+}
+
+func getObject() peers_cont {
+	var list_peers peers_cont
 	var p peers
 	p.Name = "Test"
 	p.Address = "Street"
-	list = append(list, p)
+	list_peers.Peers = append(list_peers.Peers, p)
 
 	var p1 peers
 	p1.Name = "Test1"
 	p1.Address = "Street1"
-	list = append(list, p1)
-	var list_peers peers_cont
-	list_peers.Peers = list
-
-	rsocket_json_requests.RequestConfigs("127.0.0.1", 7878)
-	rsocket_json_requests.RequestJSON("execute_something", list_peers)
+	list_peers.Peers = append(list_peers.Peers, p1)
+	return list_peers
 }
+
 ```
 TODO:
 - add TLS certificate
