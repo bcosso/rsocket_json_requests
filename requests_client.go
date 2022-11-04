@@ -3,12 +3,11 @@ package rsocket_json_requests
 import (
 	"context"
 	"log"
+	"fmt"
 	"encoding/json"
 	"github.com/rsocket/rsocket-go"
 	"github.com/rsocket/rsocket-go/payload"
 )
-
-
 
 type GenericList struct{
 	Method string `json:"method"`
@@ -26,8 +25,9 @@ func RequestConfigs(ip string, port int){
 	_port = port
 }
 
-func RequestJSON(method string, json_content interface {}) {
+func RequestJSON(method string, json_content interface {}) interface {} {
 	// Connect to server
+	var result_json interface{}
 	cli, err := rsocket.Connect().
 		SetupPayload(payload.NewString("", "")).
 		Transport(rsocket.TCPClient().SetHostAndPort(_ip, _port).Build()).
@@ -45,9 +45,16 @@ func RequestJSON(method string, json_content interface {}) {
 	
 	meta_data, err := json.Marshal(_genericList)
 	result, err := cli.RequestResponse(payload.New(meta_data, data)).Block(context.Background())
-	//result, err := cli.RequestResponse(payload.NewString("{\"method\":\""+ method +"\"}", "{\"tesssst\":\"field\"}")).Block(context.Background())
 	if err != nil {
 		panic(err)
 	}
-	log.Println("response:", result)
+	
+	err = json.Unmarshal(result.Data(), &result_json)
+
+	if err!= nil{
+		fmt.Println(err)
+		log.Fatal(err)
+		fmt.Println(err)
+	}
+	return result_json
 }
