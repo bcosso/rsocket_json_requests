@@ -12,6 +12,8 @@ import (
 func main() {
 	rsocket_json_requests.AppendFunctionHandler("execute_something", execute_something)
 	rsocket_json_requests.AppendFunctionHandler("dont_execute_something", dont_execute_something)
+	// add the path to your TLS certificate and key here
+	//	rsocket_json_requests.SetTLSConfig("cert.pem", "key.pem")
 	rsocket_json_requests.ServeCalls()
 }
 
@@ -28,6 +30,7 @@ func dont_execute_something(payload interface{}) interface{}{
 	return payload
 }
 
+
 ```
 
 
@@ -42,23 +45,19 @@ import (
 
 type peers_cont struct {
 	Peers []peers `json:"peers"`
-
 }
 
 type peers struct {
 	Name string `json:"name"`
 	Address string `json:"address"`
-
 }
 
 func main(){
-
 	list_peers := getObject() 
-
+	//rsocket_json_requests.UseTLS()
 	rsocket_json_requests.RequestConfigs("127.0.0.1", 7878)
 	result := rsocket_json_requests.RequestJSON("execute_something", list_peers)
 	fmt.Println(result)
-
 }
 
 func getObject() peers_cont {
@@ -77,5 +76,4 @@ func getObject() peers_cont {
 
 ```
 TODO:
-- add TLS certificate
 - ...
