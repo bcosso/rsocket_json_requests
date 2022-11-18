@@ -5,6 +5,7 @@ import (
 	"log"
 	"fmt"
 	"encoding/json"
+	"crypto/tls"
 	"github.com/rsocket/rsocket-go"
 	"github.com/rsocket/rsocket-go/payload"
 )
@@ -18,6 +19,7 @@ var _ip string
 var _port int
 
 var _genericList GenericList
+var _use_TLS bool
 
 
 func RequestConfigs(ip string, port int){
@@ -25,12 +27,29 @@ func RequestConfigs(ip string, port int){
 	_port = port
 }
 
+func UseTLS(){
+	_use_TLS = true;
+}
+
+
 func RequestJSON(method string, json_content interface {}) interface {} {
 	// Connect to server
 	var result_json interface{}
+	_tc := &tls.Config{
+		InsecureSkipVerify: true,
+	}
 	cli, err := rsocket.Connect().
 		SetupPayload(payload.NewString("", "")).
-		Transport(rsocket.TCPClient().SetHostAndPort(_ip, _port).Build()).
+		Transport((func() *rsocket.TCPClientBuilder{
+			
+				var builder_result *rsocket.TCPClientBuilder
+				builder_result = rsocket.TCPClient()
+				if _use_TLS == true{
+					builder_result = builder_result.SetTLSConfig(_tc)	
+				}
+				return builder_result
+				
+		}()).SetHostAndPort(_ip, _port).Build()).
 		Start(context.Background())
 	if err != nil {
 		panic(err)
