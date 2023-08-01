@@ -32,7 +32,7 @@ func UseTLS(){
 }
 
 
-func RequestJSON(method string, json_content interface {}) interface {} {
+func RequestJSON(method string, json_content interface {}) (interface {}, error) {
 	// Connect to server
 	var result_json interface{}
 	_tc := &tls.Config{
@@ -52,7 +52,8 @@ func RequestJSON(method string, json_content interface {}) interface {} {
 		}()).SetHostAndPort(_ip, _port).Build()).
 		Start(context.Background())
 	if err != nil {
-		panic(err)
+		//panic(err)
+		return nil, err
 	}
 	defer cli.Close()
 	_genericList.Method = method
@@ -65,7 +66,8 @@ func RequestJSON(method string, json_content interface {}) interface {} {
 	meta_data, err := json.Marshal(_genericList)
 	result, err := cli.RequestResponse(payload.New(meta_data, data)).Block(context.Background())
 	if err != nil {
-		panic(err)
+		//panic(err)
+		return nil, err
 	}
 	
 	err = json.Unmarshal(result.Data(), &result_json)
@@ -74,6 +76,8 @@ func RequestJSON(method string, json_content interface {}) interface {} {
 		fmt.Println(err)
 		log.Fatal(err)
 		fmt.Println(err)
+		return nil, err
 	}
-	return result_json
+	return result_json, nil
 }
+

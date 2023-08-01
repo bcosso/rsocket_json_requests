@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"encoding/json"
+	"strconv"
 	"crypto/tls"
 	"github.com/rsocket/rsocket-go"
 	"github.com/rsocket/rsocket-go/payload"
@@ -24,6 +25,17 @@ var tc * tls.Config
 type FunctionName struct{
 	Function func(pload interface{}) interface{};
 	Name string 
+}
+
+// var _ip string
+var _port_server string = "7878"
+
+
+
+
+func RequestConfigsServer(port int){
+	// _ip = ip
+	_port_server = strconv.Itoa(port)
 }
 
 var func_list []FunctionName
@@ -82,11 +94,11 @@ func ServeCalls(){
 	Transport((func() *rsocket.TCPServerBuilder {
 		var builder_result *rsocket.TCPServerBuilder
 		builder_result = rsocket.TCPServer()
-			if tc != nil{
-				builder_result = builder_result.SetTLSConfig(tc)	
-			}
-			return builder_result
-		}()).SetAddr(":7878").Build()).
+		if tc != nil{
+			builder_result = builder_result.SetTLSConfig(tc)	
+		}
+		return builder_result
+		}()).SetAddr(":" + _port_server).Build()).
 	Serve(context.Background())
 	log.Fatalln(err)
 }
