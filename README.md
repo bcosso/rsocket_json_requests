@@ -56,7 +56,8 @@ func main(){
 	list_peers := getObject() 
 	//rsocket_json_requests.UseTLS()
 	rsocket_json_requests.RequestConfigs("127.0.0.1", 7878)
-	result := rsocket_json_requests.RequestJSON("execute_something", list_peers)
+	result, _ := rsocket_json_requests.RequestJSON("execute_something", list_peers)
+	//You can (should) treat the error in case the second return of the function is not nil
 	fmt.Println(result)
 }
 
