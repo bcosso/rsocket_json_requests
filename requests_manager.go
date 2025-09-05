@@ -33,16 +33,12 @@ type FunctionName struct{
 // var _ip string
 var _port_server string = "7878"
 
-
-
-
 func RequestConfigsServer(port int){
 	// _ip = ip
 	_port_server = strconv.Itoa(port)
 }
 
 var func_list []FunctionName
-
 
 func ServeCalls(){
 
@@ -126,6 +122,7 @@ func SetTLSConfig(cert_path string, key_path string){
 	}
 
 }
+
 
 
 
