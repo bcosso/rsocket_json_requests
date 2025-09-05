@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"fmt"
-	"encoding/json"
 	"crypto/tls"
 	"github.com/rsocket/rsocket-go"
 	"github.com/rsocket/rsocket-go/payload"
@@ -63,14 +62,14 @@ func RequestJSON(method string, json_content interface {}) (interface {}, error)
 	
 	_genericList.Payload = json_content
 	
-	meta_data, err := json.Marshal(_genericList)
+	meta_data, err := jsonIterGlobal.Marshal(_genericList)
 	result, err := cli.RequestResponse(payload.New(meta_data, data)).Block(context.Background())
 	if err != nil {
 		//panic(err)
 		return nil, err
 	}
 	
-	err = json.Unmarshal(result.Data(), &result_json)
+	err = jsonIterGlobal.Unmarshal(result.Data(), &result_json)
 
 	if err!= nil{
 		fmt.Println(err)
@@ -80,4 +79,5 @@ func RequestJSON(method string, json_content interface {}) (interface {}, error)
 	}
 	return result_json, nil
 }
+
 
