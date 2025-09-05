@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"encoding/json"
+	jsoniter "github.com/json-iterator/go"
 	"strconv"
 	"crypto/tls"
 	"github.com/rsocket/rsocket-go"
@@ -12,6 +12,9 @@ import (
 	"github.com/rsocket/rsocket-go/rx/mono"
 )
 
+var IterGlobal = iter.Config{
+	EscapeHTML: false,
+}.Froze()
 
 func AppendFunctionHandler(name string, function func(pload interface{}) interface{} ) {
 	var func1 FunctionName;
@@ -51,7 +54,7 @@ func ServeCalls(){
 				var mt interface{}
 				var resp interface{}
 				fmt.Println(msg)
-				err := json.Unmarshal(msg.Data(), &mt)
+				err := jsonIterGlobal.Unmarshal(msg.Data(), &mt)
 
 
 				if err!= nil{
@@ -63,7 +66,7 @@ func ServeCalls(){
 				fmt.Println(mt)
 
 				parsed_document, ok :=  mt.(map[string] interface{})
-				//err = json.Unmarshal(current_document, &parsed_document)
+				//err = jsonIterGlobal.Unmarshal(current_document, &parsed_document)
 		
 				if !ok{
 					fmt.Println("ERROR!")
@@ -72,7 +75,7 @@ func ServeCalls(){
 				for _, f := range func_list{
 					
 					if parsed_document["method"].(string) == f.Name{
-						fmt.Println(f)
+						//fmt.Println(f)
 						resp = f.Function(parsed_document["payload"].(interface{}))
 					}
 				}
@@ -80,7 +83,7 @@ func ServeCalls(){
 				data := []byte(method)
 
 				
-				meta_data, err := json.Marshal(resp)
+				meta_data, err := jsonIterGlobal.Marshal(resp)
 				if err!= nil{
 					fmt.Println(err)
 					log.Fatal(err)
@@ -121,4 +124,5 @@ func SetTLSConfig(cert_path string, key_path string){
 		},
 		Certificates: []tls.Certificate{cert},
 	}
+
 }
