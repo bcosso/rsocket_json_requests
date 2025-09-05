@@ -53,7 +53,7 @@ func ServeCalls(){
 			rsocket.RequestResponse(func(msg payload.Payload) mono.Mono {
 				var mt interface{}
 				var resp interface{}
-				fmt.Println(msg)
+				//fmt.Println(msg)
 				err := jsonIterGlobal.Unmarshal(msg.Data(), &mt)
 
 
@@ -63,7 +63,7 @@ func ServeCalls(){
 					fmt.Println(err)
 				}
 
-				fmt.Println(mt)
+				//fmt.Println(mt)
 
 				parsed_document, ok :=  mt.(map[string] interface{})
 				//err = jsonIterGlobal.Unmarshal(current_document, &parsed_document)
@@ -126,3 +126,4 @@ func SetTLSConfig(cert_path string, key_path string){
 	}
 
 }
+
