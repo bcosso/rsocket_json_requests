@@ -12,7 +12,7 @@ import (
 	"github.com/rsocket/rsocket-go/rx/mono"
 )
 
-var IterGlobal = jsoniter.Config{
+var jsonIterGlobal = jsoniter.Config{
 	EscapeHTML: false,
 }.Froze()
 
@@ -126,5 +126,6 @@ func SetTLSConfig(cert_path string, key_path string){
 	}
 
 }
+
 
 
