@@ -110,7 +110,6 @@ func InitConn() error {
 	_cli.Cli = cli
 
 	return nil
-
 }
 
 func CloseConn() {
@@ -138,13 +137,13 @@ func RequestJSONNew(method string, json_content interface{}) (interface{}, error
 	err = jsonIterGlobal.Unmarshal(result.Data(), &result_json)
 
 	if err != nil {
-		fmt.Println(err)
 		log.Fatal(err)
 		fmt.Println(err)
 		return nil, err
 	}
 	return result_json, nil
 }
+
 
 
 
