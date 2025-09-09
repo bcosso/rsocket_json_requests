@@ -80,4 +80,71 @@ func RequestJSON(method string, json_content interface {}) (interface {}, error)
 	return result_json, nil
 }
 
+type ClientRsock struct {
+	Cli rsocket.Client
+}
+
+var _cli ClientRsock
+
+func InitConn() error {
+	_tc := &tls.Config{
+		InsecureSkipVerify: true,
+	}
+	cli, err := rsocket.Connect().
+		SetupPayload(payload.NewString("", "")).
+		Transport((func() *rsocket.TCPClientBuilder {
+
+			var builder_result *rsocket.TCPClientBuilder
+			builder_result = rsocket.TCPClient()
+			if _use_TLS == true {
+				builder_result = builder_result.SetTLSConfig(_tc)
+			}
+			return builder_result
+
+		}()).SetHostAndPort(_ip, _port).Build()).
+		Start(context.Background())
+	if err != nil {
+		//panic(err)
+		return err
+	}
+	_cli.Cli = cli
+
+	return nil
+
+}
+
+func CloseConn() {
+	_cli.Cli.Close()
+}
+
+func RequestJSONNew(method string, json_content interface{}) (interface{}, error) {
+	// Connect to server
+	var result_json interface{}
+
+	// defer cli.Close()
+	_genericList.Method = method
+	method = "{\"method\":\"" + method + "\"}"
+	data := []byte(method)
+
+	_genericList.Payload = json_content
+
+	meta_data, err := jsonIterGlobal.Marshal(_genericList)
+	result, err := _cli.Cli.RequestResponse(payload.New(meta_data, data)).Block(context.Background())
+	if err != nil {
+		//panic(err)
+		return nil, err
+	}
+
+	err = jsonIterGlobal.Unmarshal(result.Data(), &result_json)
+
+	if err != nil {
+		fmt.Println(err)
+		log.Fatal(err)
+		fmt.Println(err)
+		return nil, err
+	}
+	return result_json, nil
+}
+
+
 
