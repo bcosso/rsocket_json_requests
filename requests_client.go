@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"log"
 
-	jsoniter "github.com/json-iterator/go"
-
 	"github.com/rsocket/rsocket-go"
 	"github.com/rsocket/rsocket-go/payload"
 )
@@ -16,10 +14,6 @@ type GenericList struct {
 	Method  string      `json:"method"`
 	Payload interface{} `json:"payload"`
 }
-
-var jsonIterGlobal = jsoniter.Config{
-	EscapeHTML: false,
-}.Froze()
 
 var _ip string
 var _port int
@@ -166,6 +160,7 @@ func RequestJSON(method string, json_content interface{}) (interface{}, error) {
 	}
 	return result_json, nil
 }
+
 
 
 
