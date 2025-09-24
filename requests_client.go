@@ -74,8 +74,14 @@ func InitConn(name string, host string, port int) error {
 
 }
 
+func GetStatusConn(name string) bool {
+	_, exists := _cli[name]
+	return exists
+}
+
 func CloseConn(name string) {
 	_cli[name].Cli.Close()
+	delete(_cli, name)
 }
 
 // Creates a request with an existing connection to an instance.
@@ -160,6 +166,7 @@ func RequestJSON(method string, json_content interface{}) (interface{}, error) {
 	}
 	return result_json, nil
 }
+
 
 
 
